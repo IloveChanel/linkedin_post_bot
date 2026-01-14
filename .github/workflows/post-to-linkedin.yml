@@ -56,7 +56,7 @@ jobs:
       
       - name: Download previous state (if exists)
         continue-on-error: true
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: post-rotation-state
           path: .
