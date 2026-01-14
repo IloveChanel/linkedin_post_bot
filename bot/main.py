@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 LinkedIn Automation Bot - Selenium Edition
-Automatically posACts to LinkedIn from Google Drive or local posts folder
+Automatically posts to LinkedIn from Google Drive or local posts folder
 """
 
 import os
@@ -18,7 +18,7 @@ from post_fetcher import PostFetcher
 
 # Configure logging
 logging.basicConfig(
-    level=logging. INFO,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ def main(dry_run=False, headless=True):
     
     logger.info("=" * 70)
     logger.info("🤖 LinkedIn Automation Bot - Selenium Edition")
-    logger.info(f"⏰ Time: {datetime. now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info(f"🧪 Dry Run Mode: {dry_run}")
     logger.info(f"🎭 Headless Mode: {headless}")
     manual_run = is_manual_run()
@@ -51,7 +51,7 @@ def main(dry_run=False, headless=True):
         target_datetime = datetime.fromtimestamp(target_time)
         
         logger.info(f"Adding random delay: {delay_minutes} minutes ({delay_seconds} seconds)")
-        logger.info(f"Will start posting at: {target_datetime. strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(f"Will start posting at: {target_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
         time.sleep(delay_seconds)
         logger.info("Random delay complete - starting bot...")
     else:
@@ -70,9 +70,9 @@ def main(dry_run=False, headless=True):
     google_credentials = os.getenv('GOOGLE_CREDENTIALS')
     
     if linkedin_email and linkedin_password:
-        logger. info("✅ Environment variables loaded")
+        logger.info("✅ Environment variables loaded")
     else:
-        logger. error("❌ Missing required environment variables:")
+        logger.error("❌ Missing required environment variables:")
         if not linkedin_email:
             logger.error("   - LINKEDIN_EMAIL")
         if not linkedin_password:
@@ -86,7 +86,7 @@ def main(dry_run=False, headless=True):
         logger.info("📁 Will try Google Drive first (scheduled run)")
     else:
         if manual_run:
-            logger. info("📂 Using LOCAL posts folder (manual run)")
+            logger.info("📂 Using LOCAL posts folder (manual run)")
         else:
             logger.info("⚠️  Google Drive not configured - using LOCAL posts folder")
     
@@ -100,7 +100,7 @@ def main(dry_run=False, headless=True):
         if use_google_drive:
             post_content = fetcher.get_next_post_from_drive()
             if not post_content:
-                logger. warning("⚠️  No post from Google Drive, trying local folder...")
+                logger.warning("⚠️  No post from Google Drive, trying local folder...")
                 post_content = fetcher.get_next_post_from_local()
         else:
             post_content = fetcher.get_next_post_from_local()
@@ -122,7 +122,7 @@ def main(dry_run=False, headless=True):
         
         # Initialize LinkedIn poster
         logger.info("🌐 Initializing LinkedIn poster...")
-        poster = LinkedInPoster(headless=headless)
+        poster = LinkedInPoster(email=linkedin_email, password=linkedin_password, headless=headless)
         
         # Post to LinkedIn
         logger.info("🚀 Posting to LinkedIn...")
@@ -130,7 +130,7 @@ def main(dry_run=False, headless=True):
         
         if success: 
             logger.info("✅ Successfully posted to LinkedIn!")
-            logger. info(f"📊 Post length: {len(post_content)} characters")
+            logger.info(f"📊 Post length: {len(post_content)} characters")
             return True
         else:
             logger.error("❌ Failed to post to LinkedIn")
