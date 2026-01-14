@@ -36,7 +36,7 @@ class DriveReader:
                 logger.info("Using base64-encoded credentials")
                 try:
                     creds_data = json.loads(base64.b64decode(credentials_json))
-                except:
+                except (json.JSONDecodeError, base64.binascii.Error, ValueError):
                     # Maybe it's already decoded JSON string
                     creds_data = json.loads(credentials_json)
                 

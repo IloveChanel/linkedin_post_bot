@@ -5,16 +5,14 @@ import logging
 import argparse
 import time
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-# Add bot directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
-from bot.linkedin_poster import LinkedInPoster
-from bot.drive_reader import DriveReader
-from bot.post_tracker import PostTracker
-from bot.human_behavior import HumanBehavior
+# Import from bot package
+from linkedin_poster import LinkedInPoster
+from drive_reader import DriveReader
+from post_tracker import PostTracker
+from human_behavior import HumanBehavior
 
 
 def setup_logging(debug: bool = False):
@@ -38,8 +36,9 @@ def add_random_delay():
     delay_seconds = random_minutes * 60
     
     logger = logging.getLogger(__name__)
+    start_time = datetime.now() + timedelta(seconds=delay_seconds)
     logger.info(f"Adding random delay: {random_minutes} minutes ({delay_seconds} seconds)")
-    logger.info(f"Will start posting at: {datetime.now()}")
+    logger.info(f"Will start posting at: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     
     time.sleep(delay_seconds)
     logger.info("Random delay complete - starting bot...")

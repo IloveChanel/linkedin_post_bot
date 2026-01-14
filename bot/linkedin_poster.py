@@ -12,11 +12,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-
-try:
-    from .human_behavior import HumanBehavior
-except ImportError:
-    from human_behavior import HumanBehavior
+from human_behavior import HumanBehavior
 
 logger = logging.getLogger(__name__)
 
