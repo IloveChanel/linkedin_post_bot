@@ -1,0 +1,88 @@
+name: LinkedIn Daily Post (Selenium)
+
+on:
+  schedule:
+    # Run daily at 11:00 AM EST (16:00 UTC in winter, 15:00 UTC in summer)
+    # Note: Bot adds random 0-59 minute delay for posting between 11:00 AM - 12:00 PM EST
+    - cron: '0 16 * * *'
+  
+  # Allow manual triggering from Actions tab
+  workflow_dispatch:
+
+jobs:
+  post-to-linkedin:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install Chrome and dependencies
+        run: |
+          # Install Chrome
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          
+          # Install additional dependencies for headless Chrome
+          sudo apt-get install -y xvfb libxi6 libgconf-2-4
+          
+          # Verify Chrome installation
+          google-chrome --version
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Create .env file
+        run: |
+          cat << EOF > .env
+          LINKEDIN_EMAIL=${{ secrets.LINKEDIN_EMAIL }}
+          LINKEDIN_PASSWORD=${{ secrets.LINKEDIN_PASSWORD }}
+          GOOGLE_CREDENTIALS=${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          LINKEDIN_PROFILE_URL=https://www.linkedin.com/in/michelle-vance-ai-engineer/
+          TZ=America/New_York
+          EOF
+      
+      - name: Download previous state (if exists)
+        continue-on-error: true
+        uses: actions/download-artifact@v3
+        with:
+          name: post-rotation-state
+          path: .
+      
+      - name: Run LinkedIn Bot
+        run: |
+          cd bot
+          python main.py --headless
+      
+      - name: Upload rotation state
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: post-rotation-state
+          path: bot/posted.json
+          retention-days: 365
+      
+      - name: Upload screenshots (if any)
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: bot/screenshots/*.png
+          retention-days: 30
+          if-no-files-found: ignore
+      
+      - name: Cleanup credentials
+        if: always()
+        run: |
+          rm -f .env
+          rm -f config/.env
