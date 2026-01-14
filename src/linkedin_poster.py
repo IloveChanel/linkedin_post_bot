@@ -75,7 +75,7 @@ class LinkedInPoster:
             
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to post to LinkedIn: {e}")
-            if hasattr(e.response, 'text'):
+            if e.response is not None and hasattr(e.response, 'text'):
                 logger.error(f"API response: {e.response.text}")
             raise
     

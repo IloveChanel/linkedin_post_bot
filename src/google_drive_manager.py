@@ -47,7 +47,9 @@ class GoogleDriveManager:
             List of post dictionaries with id, name, and createdTime
         """
         try:
-            query = f"'{self.folder_id}' in parents and mimeType='text/plain' and trashed=false"
+            # Query for text files - using name filter for .txt extension
+            # This is more reliable than MIME type which can vary by upload method
+            query = f"'{self.folder_id}' in parents and name contains '.txt' and trashed=false"
             
             results = self.service.files().list(
                 q=query,

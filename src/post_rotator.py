@@ -75,7 +75,8 @@ class PostRotator:
         used_posts = self.state.get('used_posts', [])
         
         # If all posts have been used, reset
-        if set(used_posts) >= set(post_ids):
+        # Only reset if we've used all posts that are currently available
+        if set(post_ids).issubset(set(used_posts)):
             logger.info("All posts have been used. Resetting rotation.")
             used_posts = []
             self.state['used_posts'] = []

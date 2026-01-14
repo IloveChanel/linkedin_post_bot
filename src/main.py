@@ -90,9 +90,20 @@ def main():
         google_folder_id = os.getenv('GOOGLE_DRIVE_FOLDER_ID')
         
         # Validate credentials
-        if not all([linkedin_token, linkedin_person_id, google_creds_path, google_folder_id]):
-            logger.error("Missing required environment variables")
-            logger.error("Required: LINKEDIN_ACCESS_TOKEN, LINKEDIN_PERSON_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_DRIVE_FOLDER_ID")
+        missing_vars = []
+        if not linkedin_token:
+            missing_vars.append('LINKEDIN_ACCESS_TOKEN')
+        if not linkedin_person_id:
+            missing_vars.append('LINKEDIN_PERSON_ID')
+        if not google_creds_path:
+            missing_vars.append('GOOGLE_CREDENTIALS_PATH')
+        if not google_folder_id:
+            missing_vars.append('GOOGLE_DRIVE_FOLDER_ID')
+        
+        if missing_vars:
+            logger.error("Missing required environment variables:")
+            for var in missing_vars:
+                logger.error(f"  - {var}")
             return 1
         
         # Initialize components
