@@ -1,5 +1,6 @@
 """LinkedIn Poster - Selenium-based automation for posting to LinkedIn"""
 import os
+import sys
 import logging
 import time
 from typing import Optional
@@ -11,7 +12,11 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from .human_behavior import HumanBehavior
+
+try:
+    from .human_behavior import HumanBehavior
+except ImportError:
+    from human_behavior import HumanBehavior
 
 logger = logging.getLogger(__name__)
 
