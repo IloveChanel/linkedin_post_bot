@@ -1,0 +1,26 @@
+# LinkedIn Auto-Posting Bot Configuration
+
+# Client Information
+client:
+  name: "Michelle Vance"
+  linkedin_profile: "https://www.linkedin.com/in/michelle-vance-ai-engineer/"
+  contact_email: "contact@example.com"
+
+# Posting Schedule
+schedule:
+  timezone: "America/New_York"  # Eastern Time
+  post_time: "12:00"  # 12:00 PM ET
+  enabled: true
+
+# Rotation Settings
+rotation:
+  strategy: "newest_first"  # Start with newest, rotate to oldest, then loop
+  reset_on_complete: true  # Start over when all posts are used
+
+# Rotation State File
+rotation_state_file: "rotation_state.json"
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "detailed"  # simple or detailed
